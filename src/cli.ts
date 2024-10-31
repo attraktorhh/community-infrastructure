@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
+import consola from "consola";
 import { bootstrapServer } from "./commands/bootstrap-server";
 import { program } from "commander";
+
+consola.wrapConsole();
 
 program
   .name("Attraktor Community Server Setup CLI")

@@ -34,7 +34,6 @@
   "dependencies": {
     "commander": "^12.1.0",
     "consola": "^3.2.3",
-    "coolify-typescript-sdk": "^0.0.1-development",
     "execa": "^9.5.1"
   }
 }
