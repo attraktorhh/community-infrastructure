@@ -12,8 +12,8 @@ export async function bootstrapServer() {
     return;
   }
 
-  const {success: keycloakCreationSuccess} = await createApplicationKeycloak();
+  /*const {success: keycloakCreationSuccess} = await createApplicationKeycloak();
   if (!keycloakCreationSuccess) {
     return;
-  }
+  }*/
 }
