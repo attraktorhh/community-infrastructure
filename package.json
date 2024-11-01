@@ -12,7 +12,6 @@
   "license": "MIT",
   "main": "./dist/index.js",
   "bin": "./dist/cli.js",
-  "type": "module",
   "files": [
     "dist/**/*",
     "!dist/**/*.test.js"
@@ -20,14 +19,12 @@
   "scripts": {
     "dev": "tsx ./src/cli.ts",
     "clean": "rimraf ./dist/ ./exec/",
-    "build": "npm run clean && tsc",
-    "test": "npm run build && ava --verbose",
-    "bundle": "npm run build && pkg . --out-dir ./exec/"
+    "build": "bun run clean && bun build ./src/cli.ts --target node --outdir ./dist",
+    "test": "bun run build && ava --verbose"
   },
   "devDependencies": {
-    "ava": "^2.2.0",
-    "pkg": "^4.4.0",
-    "rimraf": "^2.6.3",
+    "ava": "^6.2.0",
+    "rimraf": "^6.0.1",
     "tsx": "^4.19.2",
     "typescript": "^3.5.3"
   },

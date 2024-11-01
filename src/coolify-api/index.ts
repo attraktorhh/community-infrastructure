@@ -1,6 +1,7 @@
 import consola from "consola";
 import { ExecutionResult } from "../utils/execution-result";
 import { CoolifyServer } from "./types/server";
+import { CoolifyApplications } from "./applications";
 
 export enum CoolifyFailedVerificationReason {
   CoolifyNotInstalled = "Coolify is not installed",

@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "dist",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "CommonJS",
     "target": "es6",
     "esModuleInterop": true,
     "resolveJsonModule": true,
   },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
