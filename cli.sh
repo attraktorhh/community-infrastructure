@@ -5,5 +5,8 @@ then
   curl -fsSL https://bun.sh/install | bash
 fi
 
+# install dependencies using lockfile
+bun install --frozen-lockfile
+
 # run the cli using `bun run dev -- <all args passed to the cli>`
 bun run dev -- $@
