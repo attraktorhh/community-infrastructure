@@ -102,7 +102,7 @@ export class Coolify {
       };
     } catch (error) {
       if (error.message !== "fetch failed") {
-        console.error(`request failed with error message "${error.message}"`);
+        console.error(`request failed with error message "${error.message}" and name: "${error.name}"`);
         throw error;
       }
 
