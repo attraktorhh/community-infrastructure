@@ -9,7 +9,7 @@ export class CoolifyApplications {
     this.root = api;
   }
 
-  public async list(): Promise<CoolifyApplication> {
+  public async list(): Promise<CoolifyApplication[]> {
     return await this.root.fetch("/api/v1/applications");
   }
 

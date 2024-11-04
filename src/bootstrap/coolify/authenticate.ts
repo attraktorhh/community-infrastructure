@@ -16,9 +16,15 @@ async function getIpOfCurrentMachine() {
   return ip;
 }
 
-export async function authenticateCoolify(): Promise<
+export async function authenticateCoolifyIfNeeded(): Promise<
   ExecutionResult<CoolifyAuthenticationFailureReason>
 > {
+  if (Coolify.isAuthenticated) {
+    return {
+      success: true,
+    }
+  }
+
   const hasToken = await consola.prompt(
     "Do you have a Coolify Api Token at hand?",
     {

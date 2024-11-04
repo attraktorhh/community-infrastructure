@@ -2,6 +2,8 @@ import consola from "consola";
 import { ExecutionResult } from "../utils/execution-result";
 import { CoolifyServer } from "./types/server";
 import { CoolifyApplications } from "./applications";
+import { CoolifyProjects } from "./projects";
+import { CoolifyServices } from "./services";
 
 export enum CoolifyFailedVerificationReason {
   CoolifyNotInstalled = "Coolify is not installed",
@@ -45,10 +47,14 @@ export class Coolify {
   private static instance: Coolify;
   private token?: string;
   public applications: CoolifyApplications;
+  public projects: CoolifyProjects;
+  public services: CoolifyServices;
 
   private constructor(token?: string) {
     this.token = token;
     this.applications = new CoolifyApplications(this);
+    this.projects = new CoolifyProjects(this);
+    this.services = new CoolifyServices(this);
   }
 
   public static async authenticate(
@@ -81,6 +87,10 @@ export class Coolify {
     }
 
     return Coolify.instance;
+  }
+
+  public static get isAuthenticated() {
+    return !!Coolify.instance?.token;
   }
 
   public async verifyInstallation(): Promise<{
