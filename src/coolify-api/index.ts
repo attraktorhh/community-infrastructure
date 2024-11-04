@@ -101,7 +101,7 @@ export class Coolify {
         verified: true,
       };
     } catch (error) {
-      if (error.message !== "fetch failed") {
+      if (error.message !== "fetch failed" && error.name !== 'ConnectionRefused') {
         console.error(`request failed with error message "${error.message}" and name: "${error.name}"`);
         throw error;
       }
