@@ -11,21 +11,14 @@
   ],
   "license": "MIT",
   "main": "./dist/index.js",
-  "bin": "./dist/cli.js",
   "files": [
     "dist/**/*",
     "!dist/**/*.test.js"
   ],
   "scripts": {
-    "dev": "tsx ./src/cli.ts",
-    "clean": "rimraf ./dist/ ./exec/",
-    "build": "bun run clean && bun build ./src/cli.ts --target node --outdir ./dist",
-    "test": "bun run build && ava --verbose"
+    "dev": "bun ./src/cli.ts"
   },
   "devDependencies": {
-    "ava": "^6.2.0",
-    "rimraf": "^6.0.1",
-    "tsx": "^4.19.2",
     "typescript": "^3.5.3"
   },
   "dependencies": {
