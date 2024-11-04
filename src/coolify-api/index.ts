@@ -120,7 +120,7 @@ export class Coolify {
       path = "/" + path;
     }
 
-    const response = await fetch("http://localhost:8000/api" + path, {
+    const response = await fetch("http://127.0.0.1:8000/api" + path, {
       ...options,
       headers: {
         Authorization: this.token ? `Bearer ${this.token}` : undefined,
