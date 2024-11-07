@@ -47,13 +47,10 @@ async function taskDone() {
   showMainMenu();
 }
 
-let noCommand = true;
-
 program
   .command("bootstrap")
   .description("Bootstrap this machine as a Community Server")
   .action(async () => {
-    noCommand = false;
     await installCoolifyIfNeeded();
     await createCoolifyResources();
 
@@ -64,7 +61,6 @@ program
   .command("install:coolify")
   .description("Install Coolify")
   .action(async () => {
-    noCommand = false;
     await installCoolifyIfNeeded();
 
     taskDone();
@@ -74,15 +70,13 @@ program
   .command("create:resources")
   .description("Create Coolify Resources (Applications, etc.)")
   .action(async () => {
-    noCommand = false;
     await createCoolifyResources();
 
     taskDone();
   });
 
-setTimeout(() => {
-  if (noCommand) {
-    showMainMenu();
-  }
-}, 500);
+
+program.action(() => {
+  showMainMenu();
+})
 program.parse();
