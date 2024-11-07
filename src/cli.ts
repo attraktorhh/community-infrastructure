@@ -75,6 +75,5 @@ program
     taskDone();
   });
 
-program.parse();
-
 showMainMenu();
+program.parse();
