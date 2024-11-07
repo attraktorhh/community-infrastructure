@@ -5,12 +5,14 @@ import {
 } from "../../../coolify-api";
 import { ExecutionResult } from "../../../utils/execution-result";
 import { authenticateCoolifyIfNeeded } from "../authenticate";
-import { getOrCreateKeycloak } from "./keycloak";
+import { configureKeycloak, getOrCreateKeycloak } from "./keycloak";
 import { CoolifyProject } from "../../../coolify-api/projects/types/project";
+import { getOrCreateSynapse } from "./synapse";
 
 export enum FailureReasons {
   ProjectCreationFailed = "Failed to create Project",
   KeycloakCreationFailed = "Failed to create Keycloak",
+  SynapseCreationFailed = "Failed to create Synapse",
 }
 
 const ATTRAKTOR_PROJECT_NAME = "Attraktor-Community" as const;
@@ -36,18 +38,15 @@ export async function createCoolifyResources(): Promise<
     };
   }
 
-  const { success: keycloakConfigureSuccess } = await configureKeycloak(
-    keycloak.uuid
-  );
+  await configureKeycloak();
 
-  if (!keycloakConfigureSuccess) {
+  const {success: synapseSuccess, result: synapse} = await getOrCreateSynapse(project.uuid, keycloak.uuid);
+  if (!synapseSuccess) {
     return {
       success: false,
-      reason: FailureReasons.KeycloakCreationFailed,
+      reason: FailureReasons.SynapseCreationFailed,
     };
   }
-
-  // TODO: create synapse servers
 
   return {
     success: true,

@@ -1,19 +1,33 @@
 import consola from "consola";
-import { Coolify, CoolifyAuthenticationFailureReason } from "../../../coolify-api";
+import {
+  Coolify,
+  CoolifyAuthenticationFailureReason,
+} from "../../../coolify-api";
 import { ExecutionResult } from "../../../utils/execution-result";
 import { authenticateCoolifyIfNeeded } from "../authenticate";
 import { CoolifyService } from "../../../coolify-api/services/types/service";
+import { waitForUserToContinue } from "../../../utils/cli";
 
-export enum FailureReasons {
-    NO_SERVERS_FOUND = "No servers found",
+export enum CreationFailureReasons {
+  NO_SERVERS_FOUND = "No servers found",
 }
 
 const KEYCLOAK_SERVICE_NAME = "Keycloak" as const;
 
-export async function getOrCreateKeycloak(projectUUID: string): Promise<ExecutionResult<FailureReasons | CoolifyAuthenticationFailureReason, CoolifyService>> {
+export async function getOrCreateKeycloak(
+  projectUUID: string
+): Promise<
+  ExecutionResult<
+    CreationFailureReasons | CoolifyAuthenticationFailureReason,
+    CoolifyService
+  >
+> {
   const api = Coolify.get();
 
-  const {success: authenticationSuccess, reason: authenticationFailureReason} = await authenticateCoolifyIfNeeded();
+  const {
+    success: authenticationSuccess,
+    reason: authenticationFailureReason,
+  } = await authenticateCoolifyIfNeeded();
   if (!authenticationSuccess) {
     return {
       success: false,
@@ -22,7 +36,9 @@ export async function getOrCreateKeycloak(projectUUID: string): Promise<Executio
   }
 
   const services = await api.services.list();
-  const existingService = services.find((service) => service.name === KEYCLOAK_SERVICE_NAME);
+  const existingService = services.find(
+    (service) => service.name === KEYCLOAK_SERVICE_NAME
+  );
 
   if (existingService) {
     consola.success("Keycloak is already installed, skipping installation");
@@ -44,32 +60,43 @@ export async function getOrCreateKeycloak(projectUUID: string): Promise<Executio
   let selectedServer = servers[0].uuid;
 
   if (servers.length > 1) {
-    const selection = await consola.prompt('Choose a server to install Keycloak on', {
-        type: 'select',
+    const selection = await consola.prompt(
+      "Choose a server to install Keycloak on",
+      {
+        type: "select",
         options: servers.map((server) => ({
-            label: `${server.name} (${server.ip})`,
-            value: server.uuid,
+          label: `${server.name} (${server.ip})`,
+          value: server.uuid,
         })),
-    });
+      }
+    );
 
     selectedServer = selection.value;
   }
 
   const service = await api.services.create({
-    type: 'keycloak-with-postgresql',
+    type: "keycloak-with-postgresql",
     name: KEYCLOAK_SERVICE_NAME,
-    description: 'Our central SSO service',
+    description: "Our central SSO service",
     project_uuid: projectUUID,
-    environment_name: 'production',
+    environment_name: "production",
     server_uuid: selectedServer,
-    instant_deploy: false,
+    instant_deploy: true,
   });
-
-  // TODO: update envs for keycloak (ask user for FQDN)
-  // TODO: ask user to set FQDN as domain
 
   return {
     success: true,
     result: service,
-  }
+  };
+}
+
+export async function configureKeycloak(): Promise<void> {
+  consola.box(`Configuring Keycloak.
+    
+Sadly you need to configure Keycloak manually.
+Please look open the corresponding instructions and do so now.
+
+https://github.com/attraktorhh/community-server/blob/main/docs/keycloak-setup.md`);
+
+  await waitForUserToContinue();
 }

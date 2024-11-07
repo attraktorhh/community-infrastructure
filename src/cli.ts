@@ -3,6 +3,7 @@
 import consola from "consola";
 import { program } from "commander";
 import { installCoolifyIfNeeded } from "./bootstrap/coolify/install";
+import { createCoolifyResources } from "./bootstrap/coolify/applications";
 
 consola.wrapConsole();
 

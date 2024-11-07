@@ -1,3 +1,5 @@
+import { CoolifyApplication } from "../../applications/types/application";
+
 export interface CoolifyService {
   id: number;
   uuid: string;
@@ -17,4 +19,5 @@ export interface CoolifyService {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  applications: CoolifyApplication[];
 }
