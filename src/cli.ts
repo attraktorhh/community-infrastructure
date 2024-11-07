@@ -12,8 +12,8 @@ program
   .description("CLI to setup and configure the Attraktor Community Server")
   .version("0.0.1-alpha");
 
-function showMainMenu() {
-  consola.prompt("What do you want to do?", {
+async function showMainMenu() {
+  const action = await consola.prompt("What do you want to do?", {
     type: "select",
     options: [
       {
@@ -30,6 +30,27 @@ function showMainMenu() {
       },
     ],
   });
+
+  switch (action.value) {
+    case "bootstrap":
+      await bootstrap();
+      break;
+
+    case "installCoolify":
+      await installCoolifyIfNeeded();
+      break;
+
+    case "createResources":
+      await createCoolifyResources();
+      break;
+
+    default:
+      consola.error("Unknown action");
+      taskDone();
+      break;
+  }
+
+  taskDone();
 }
 
 async function taskDone() {
@@ -47,12 +68,16 @@ async function taskDone() {
   showMainMenu();
 }
 
+async function bootstrap() {
+  await installCoolifyIfNeeded();
+  await createCoolifyResources();
+}
+
 program
   .command("bootstrap")
   .description("Bootstrap this machine as a Community Server")
   .action(async () => {
-    await installCoolifyIfNeeded();
-    await createCoolifyResources();
+    bootstrap();
 
     taskDone();
   });
