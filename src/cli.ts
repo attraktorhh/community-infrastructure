@@ -12,64 +12,11 @@ program
   .description("CLI to setup and configure the Attraktor Community Server")
   .version("0.0.1-alpha");
 
-async function showMainMenu() {
-  const action = await consola.prompt("What do you want to do?", {
-    type: "select",
-    options: [
-      {
-        label: "Everything - Fresh Install",
-        value: "bootstrap",
-      },
-      {
-        label: "01 Install Coolify",
-        value: "installCoolify",
-      },
-      {
-        label: "02 Install and Configure Applications",
-        value: "createResources",
-      },
-    ],
-  });
-
-  switch (action.value) {
-    case "bootstrap":
-      await bootstrap();
-      break;
-
-    case "installCoolify":
-      await installCoolifyIfNeeded();
-      break;
-
-    case "createResources":
-      await createCoolifyResources();
-      break;
-
-    default:
-      consola.error("Unknown action");
-      taskDone();
-      break;
-  }
-
-  taskDone();
-}
-
-async function taskDone() {
-  const result = await consola.prompt("Do you want to do more?", {
-    type: "confirm",
-    initial: true,
-  });
-
+async function bootstrap() {
+  const {result} = await installCoolifyIfNeeded();
   if (!result) {
-    consola.info("Ok, bye!");
-    process.exit(0);
     return;
   }
-
-  showMainMenu();
-}
-
-async function bootstrap() {
-  await installCoolifyIfNeeded();
   await createCoolifyResources();
 }
 
@@ -77,9 +24,7 @@ program
   .command("bootstrap")
   .description("Bootstrap this machine as a Community Server")
   .action(async () => {
-    bootstrap();
-
-    taskDone();
+    await bootstrap();
   });
 
 program
@@ -87,8 +32,6 @@ program
   .description("Install Coolify")
   .action(async () => {
     await installCoolifyIfNeeded();
-
-    taskDone();
   });
 
 program
@@ -96,12 +39,6 @@ program
   .description("Create Coolify Resources (Applications, etc.)")
   .action(async () => {
     await createCoolifyResources();
-
-    taskDone();
   });
 
-
-program.action(() => {
-  showMainMenu();
-})
 program.parse();
