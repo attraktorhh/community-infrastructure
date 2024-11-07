@@ -1,8 +1,13 @@
 import consola from "consola";
-import { Coolify, CoolifyFailedVerificationReason } from "../../coolify-api";
+import {
+  Coolify,
+  CoolifyAuthenticationFailureReason,
+  CoolifyFailedVerificationReason,
+} from "../../coolify-api";
 import { ExecutionResult } from "../../utils/execution-result";
 import { getIpOfCurrentMachine } from "../../utils/network";
 import { waitForUserToContinue } from "../../utils/cli";
+import { authenticateCoolifyIfNeeded } from "./authenticate";
 
 async function installCoolify(): Promise<{
   success: boolean;
@@ -44,9 +49,20 @@ export enum BootstrapFailureReason {
 }
 
 async function waitForUserToSetCoolifyDomain(): Promise<
-  ExecutionResult<BootstrapFailureReason>
+  ExecutionResult<BootstrapFailureReason | CoolifyAuthenticationFailureReason>
 > {
   const api = Coolify.get();
+  const {
+    success: authenticationSuccess,
+    reason: authenticationFailureReason,
+  } = await authenticateCoolifyIfNeeded();
+  if (!authenticationSuccess) {
+    return {
+      success: false,
+      reason: authenticationFailureReason,
+    };
+  }
+
   const servers = await api.listServers();
   const server = servers[0];
 
